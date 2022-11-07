@@ -1,5 +1,11 @@
 # FZ-apps
-Apps &amp; plugins for flipper zero
+Apps &amp; plugins for flipper zero. Tutorial copied from this outdated one:
+https://github.com/DroomOne/Flipper-Plugin-Tutorial
+Everything is OK except for some functions named "Os-". Those are replaced by "Furi-" functions as you can see on my code. Some of them have different parameter inputs so beware of that. What you can do is check anything with the updated Snake_game that comes with the firmwares in case you don't know how to replace the syntax.
+To build I use:
+fbt launch_app APPSRC=applications_user/hello_world
+
+All belonging credits to his author!
 
 # Flipper-Plugin
 Tutorial on how to build a basic "Hello world" plugin for Flipper Zero.
