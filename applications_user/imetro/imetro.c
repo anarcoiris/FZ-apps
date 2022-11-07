@@ -7,6 +7,7 @@
 #include <furi_hal_resources.h>
 
 #define TAG "Intervalometro"
+bool Milisec=false;
 typedef enum {
     EventTypeKey,
     EventTypeTick,
@@ -48,6 +49,10 @@ static void imetro_render_callback(Canvas* const canvas, void* ctx) {
     snprintf(buffer, sizeof(buffer), "%u", imetro_state->TimeExp);
     elements_multiline_text_aligned(
         canvas, 70, 46, AlignCenter, AlignTop, buffer);
+    if(Milisec==true){
+        elements_multiline_text_aligned(
+            canvas, 86, 46, AlignCenter, AlignTop, "ms");
+    }
     release_mutex((ValueMutex*)ctx, imetro_state);
 }
 
@@ -66,7 +71,6 @@ static void imetro_state_init(iMetroState* const imetro_state) {
 int32_t imetro_app(void* p) {
     UNUSED(p);
     // srand(DWT->CYCCNT); //not sure what it does but was on snake_game. Looks like a randomizer, prob unused here
-
     FuriMessageQueue* event_queue = furi_message_queue_alloc(8, sizeof(iMetroEvent));
 
     iMetroState* imetro_state = malloc(sizeof(iMetroState));
@@ -149,7 +153,9 @@ int32_t imetro_app(void* p) {
                       }
                     break;
                     case InputKeyOk:
-                        imetro_state->TimeExpMS = imetro_state->TimeExp*1000;
+                        if(Milisec==false){
+                          imetro_state->TimeExpMS = imetro_state->TimeExp*1000;
+                        }
                         for(int i = 0; i < imetro_state->NumbExp; i++){ //So basically this is the loop that will;
                                                                   //  next ver will use 'imetro_state->NumbExp--'
                                                                   //if we can display the NumbExp countdown somehow while for loop runs
@@ -172,6 +178,9 @@ int32_t imetro_app(void* p) {
                         break;
                     }
                 }
+              if(event.input.type == InputTypeLong && event.input.key == InputKeyDown){
+                Milisec=!Milisec;
+              }
             }
         } else {
             // FURI_LOG_D("imetro", "osMessageQueue: event timeout"); //carefull
