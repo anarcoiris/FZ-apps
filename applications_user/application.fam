@@ -1,0 +1,9 @@
+App(
+    appid="ext_apps",
+    name="External applications",
+    apptype=FlipperAppType.EXTERNAL,
+    provides=[
+        "hello_world",
+	"imetro",
+    ],
+)
