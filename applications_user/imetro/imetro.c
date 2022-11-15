@@ -70,7 +70,6 @@ static void imetro_state_init(iMetroState* const imetro_state) {
 
 int32_t imetro_app(void* p) {
     UNUSED(p);
-    // srand(DWT->CYCCNT); //not sure what it does but was on snake_game. Looks like a randomizer, prob unused here
     FuriMessageQueue* event_queue = furi_message_queue_alloc(8, sizeof(iMetroEvent));
 
     iMetroState* imetro_state = malloc(sizeof(iMetroState));
@@ -161,12 +160,12 @@ int32_t imetro_app(void* p) {
                                                                   //  next ver will use 'imetro_state->NumbExp--'
                                                                   //if we can display the NumbExp countdown somehow while for loop runs
 
-                          //acquire_mutex_block(&state_mutex); //iMetroState* imetro_state = (iMetroState*)   ## place in front!!
+                          //acquire_mutex_block(&state_mutex); //iMetroState* imetro_state = (iMetroState*)   ## place in front!! 
                           furi_hal_power_enable_otg();  //trigger the 5V On for as long as TimeExp time is.
                           furi_delay_ms(imetro_state->TimeExpMS);
                           furi_hal_power_disable_otg(); // Then trigger OFF, add +1 to i until i equals the desired NExp (number of expositions)
                           furi_delay_ms(500);
-                        //  view_port_update(view_port);
+                        //  view_port_update(view_port);        ## testing to get progress status screen
                           //release_mutex(&state_mutex, imetro_state);
                           //view_port_update(view_port);
                           //furi_delay_ms(500);
@@ -184,7 +183,6 @@ int32_t imetro_app(void* p) {
               }
             }
         } else {
-            // FURI_LOG_D("imetro", "osMessageQueue: event timeout"); //carefull
             // event timeout on test
         }
 
@@ -197,8 +195,7 @@ int32_t imetro_app(void* p) {
     furi_record_close(RECORD_GUI);
     view_port_free(view_port);
     furi_message_queue_free(event_queue);
-    //delete_mutex(&state_mutex); //carefull(not tested)
-    //free(imetro_state); // carefull
+
 
     return 0;
 }
