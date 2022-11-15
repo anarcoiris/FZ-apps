@@ -153,14 +153,15 @@ int32_t imetro_app(void* p) {
                     break;
                     case InputKeyOk:
                         if(Milisec==false){
-                          imetro_state->TimeExpMS = imetro_state->(TimeExp+1)*1000;
+                          imetro_state->TimeExpMS = imetro_state->TimeExp*1000+1000;
                         }else{
-                          imetro_state->TimeExpMS = imetro_state->TimeExp+1000; 
+                          imetro_state->TimeExpMS = imetro_state->TimeExp+1000;
+                        }
                         for(int i = 0; i < imetro_state->NumbExp; i++){ //So basically this is the loop that will;
                                                                   //  next ver will use 'imetro_state->NumbExp--'
                                                                   //if we can display the NumbExp countdown somehow while for loop runs
 
-                          //acquire_mutex_block(&state_mutex); //iMetroState* imetro_state = (iMetroState*)   ## place in front!! 
+                          //acquire_mutex_block(&state_mutex); //iMetroState* imetro_state = (iMetroState*)   ## place in front!!
                           furi_hal_power_enable_otg();  //trigger the 5V On for as long as TimeExp time is.
                           furi_delay_ms(imetro_state->TimeExpMS);
                           furi_hal_power_disable_otg(); // Then trigger OFF, add +1 to i until i equals the desired NExp (number of expositions)
