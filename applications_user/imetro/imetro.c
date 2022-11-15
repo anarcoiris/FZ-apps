@@ -154,8 +154,9 @@ int32_t imetro_app(void* p) {
                     break;
                     case InputKeyOk:
                         if(Milisec==false){
-                          imetro_state->TimeExpMS = imetro_state->TimeExp*1000;
-                        }
+                          imetro_state->TimeExpMS = imetro_state->(TimeExp+1)*1000;
+                        }else{
+                          imetro_state->TimeExpMS = imetro_state->TimeExp+1000; 
                         for(int i = 0; i < imetro_state->NumbExp; i++){ //So basically this is the loop that will;
                                                                   //  next ver will use 'imetro_state->NumbExp--'
                                                                   //if we can display the NumbExp countdown somehow while for loop runs
