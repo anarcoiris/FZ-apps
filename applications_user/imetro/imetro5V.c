@@ -1,3 +1,4 @@
+//This GPIO intervalometer works with 5V source pin (pin 1.1) new one uses A7 pin(1.2)
 #include <furi.h>
 #include <gui/gui.h>
 #include <gui/elements.h>
