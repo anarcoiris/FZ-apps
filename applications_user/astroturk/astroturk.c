@@ -75,11 +75,11 @@ static void astroturk_render_callback(Canvas* const canvas, void* ctx) {
     }
     if(status_dir==true){
         elements_multiline_text_aligned(
-            canvas, 92, 42, AlignCenter, AlignTop, "dir 1");
+            canvas, 92, 44, AlignCenter, AlignTop, "dir 1");
     }
     if(status_dir==false){
         elements_multiline_text_aligned(
-            canvas, 92, 42, AlignCenter, AlignTop, "dir 0");
+            canvas, 92, 44, AlignCenter, AlignTop, "dir 0");
     }
     release_mutex((ValueMutex*)ctx, astroturk_state);
 }
@@ -122,7 +122,7 @@ int32_t astroturk_app(void* p) {
     //Enabled stepper motor pin
     const GpioPin gpio_drv = (GpioPin){.port = GPIOA, .pin = LL_GPIO_PIN_14};
     const GpioPin gpio_step = (GpioPin){.port = GPIOA, .pin = LL_GPIO_PIN_13};
-    const GpioPin gpio_dir = (GpioPin){.port = GPIOA, .pin = LL_GPIO_PIN_6};
+    const GpioPin gpio_dir = (GpioPin){.port = USART1_TX_Port, .pin = USART1_TX_Pin};    //{.port = GPIOA, .pin = LL_GPIO_PIN_6}; this once was previous setting, nw
     furi_hal_gpio_init_simple(&gpio_drv, GpioModeOutputPushPull);  //trigger the a7 On for as long as TimeExp time is.
     furi_hal_gpio_write(&gpio_drv,true);
     furi_hal_gpio_init_simple(&gpio_dir, GpioModeOutputPushPull);
