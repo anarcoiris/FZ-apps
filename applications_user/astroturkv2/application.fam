@@ -1,0 +1,11 @@
+App(
+    appid="astroturkv2",
+    name="Astroturkv2",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="astroturkv2_app",
+    cdefines=["APP_ASTROTURKv2"],
+    requires=["gui"],
+    stack_size=1 * 1024,
+    fap_icon="astro.png",
+    order=70,
+)
