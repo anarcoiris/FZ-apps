@@ -364,27 +364,27 @@ int32_t astroturkv2_app(void* p) {
                       }else{
                         astroturkv2_state->TimeExpMS = astroturkv2_state->TimeExp;
                       }
-                      astroturkv2_state->Steps = (astroturkv2_state->TimeExpMS+50)/3;
+                      astroturkv2_state->Steps = (astroturkv2_state->TimeExpMS)*0.2;
                       for(int i = 0; i < astroturkv2_state->NumbExp; i++){ //So basically this is the loop that will;
                                                           //  next ver will use 'astroturkv2_state->NumbExp--'
                                                           //if we can display the NumbExp countdown somehow while for loop runs
 
                                                                 //acquire_mutex_block(&state_mutex); //Astroturkv2State* astroturkv2_state = (Astroturkv2State*)   ## place in front!!
-                              furi_hal_gpio_init(&gpio_ext_pa7, GpioModeOutputPushPull, GpioPullNo, GpioSpeedVeryHigh);  //trigger the a7 On for as long as TimeExp time is.
+                              furi_hal_gpio_init(&gpio_ext_pa7, GpioModeOutputPushPull, GpioPullDown, GpioSpeedVeryHigh);  //trigger the a7 On for as long as TimeExp time is.
                                                                 //furi_hal_gpio_init_simple(&gpio_ext_pc3, GpioModeOutputPushPull);  //trigger the a7 On for as long as TimeExp time is.
                               furi_hal_gpio_write(&gpio_ext_pa7,true);
                               for(int s = 0; s < astroturkv2_state->Steps; s++){
                                   furi_hal_gpio_write(&gpio_step,true);
-                                  furi_delay_us(2000);
+                                  furi_delay_us(2500);
                                   furi_hal_gpio_write(&gpio_step,false);
-                                  furi_delay_us(1000);
+                                  furi_delay_us(2500);
                               }
 
                                                                 //furi_hal_gpio_write(&gpio_ext_pc3,true);
                               furi_hal_gpio_write(&gpio_ext_pa7,false);
                               //furi_hal_gpio_write(&gpio_step,false);
                                                                 //furi_hal_gpio_write(&gpio_ext_pc3,false);
-                              furi_delay_us(1000);
+                              furi_delay_ms(150);
                                                                 //  view_port_update(view_port);        ## testing to get progress status screen
                                                                 //release_mutex(&state_mutex, astroturkv2_state);
                                                                 //view_port_update(view_port);
