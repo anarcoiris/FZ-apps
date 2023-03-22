@@ -89,14 +89,14 @@ static void astroturkv2_render_callback(Canvas* const canvas, void* ctx) {
       break;
       case 5:
         elements_multiline_text_aligned(
-            canvas, 32, 46, AlignCenter, AlignTop, " < Direccion >");
+            canvas, 32, 46, AlignCenter, AlignTop, " < Hemisferio >");
         if(status_dir==true){
             elements_multiline_text_aligned(
-              canvas, 96, 46, AlignCenter, AlignTop, "1");
+              canvas, 96, 46, AlignCenter, AlignTop, "Sur");
         }
         if(status_dir==false){
             elements_multiline_text_aligned(
-              canvas, 96, 46, AlignCenter, AlignTop, "0");
+              canvas, 96, 46, AlignCenter, AlignTop, "Norte");
         }
       break;
       case 6:
