@@ -33,7 +33,7 @@ typedef struct {
 
 } Astroturkv2State;
 
-static void astroturkv2_render_callback(Canvas* const canvas, void* ctx) {
+static void astroturkv2_render_callback(Canvas* const canvas, void* ctx) { //la función que controla la GUI (el contenido que se visualiza)
     furi_assert(ctx);
     const Astroturkv2State* astroturkv2_state = ctx;
 
@@ -52,9 +52,7 @@ static void astroturkv2_render_callback(Canvas* const canvas, void* ctx) {
     elements_multiline_text_aligned(
         canvas, 32, 24, AlignCenter, AlignTop, " -Settings-");
     char buffer[12];
-    //snprintf(buffer, sizeof(buffer), "%u", astroturkv2_state->NumbExp);
-    //elements_multiline_text_aligned(
-    //    canvas, 70, 24, AlignCenter, AlignTop, buffer);
+    
     switch(astroturkv2_state->MenuItem)  {
       case 1:
         elements_multiline_text_aligned(
@@ -132,7 +130,7 @@ static void astroturkv2_state_init(Astroturkv2State* const astroturkv2_state) {
     astroturkv2_state->StepsDelay = 26000;
 }
 
-int32_t astroturkv2_app(void* p) {
+int32_t astroturkv2_app(void* p) {                  //Función principal de la app
     UNUSED(p);
     FuriMessageQueue* event_queue = furi_message_queue_alloc(8, sizeof(Astroturkv2Event));
 
