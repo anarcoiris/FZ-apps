@@ -201,18 +201,6 @@ int32_t astroturkv2_app(void* p) {
                         break;
                       }
                     break;
-                        //if(astroturkv2_state->TimeExp<=5){
-                        //  if(astroturkv2_state->TimeExp>1){
-                        //    astroturkv2_state->TimeExp--;
-                        //  }
-                        //}if(astroturkv2_state->TimeExp>5){
-                        //  if(astroturkv2_state->TimeExp>44){
-                        //    astroturkv2_state->TimeExp = astroturkv2_state->TimeExp-15;
-                        //  }else{
-                        //    astroturkv2_state->TimeExp = astroturkv2_state->TimeExp-5;
-                        //  }
-                        //}
-                        //break;
                     case InputKeyRight:
                         if(astroturkv2_state->MenuItem==1){
                           if(astroturkv2_state->TimeExp>9){
