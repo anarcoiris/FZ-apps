@@ -386,34 +386,24 @@ int32_t astroturkv2_app(void* p) {
                                   furi_hal_gpio_write(&gpio_step,false);
                                   furi_delay_us(astroturkv2_state->StepsDelay);
                               }
-
-                                                                //furi_hal_gpio_write(&gpio_ext_pc3,true);
                               furi_hal_gpio_write(&gpio_ext_pa7,false);
-                              //furi_hal_gpio_write(&gpio_step,false);
-                                                                //furi_hal_gpio_write(&gpio_ext_pc3,false);
-                              furi_delay_ms(15);         // CAM DELAY!! 150
+                              for(int camdelay = 0; camdelay < 150000/astroturkv2_state->StepsDelay; camdelay++){
+                                  //furi_delay_us(4000);
+                                  furi_hal_gpio_write(&gpio_step,true);
+                                  furi_delay_us(astroturkv2_state->StepsDelay);
+                                  furi_hal_gpio_write(&gpio_step,false);
+                                  furi_delay_us(astroturkv2_state->StepsDelay);
+                              }
+                                       // CAM DELAY!! 150
                                                                 //  view_port_update(view_port);        ## testing to get progress status screen
                                                                 //release_mutex(&state_mutex, astroturkv2_state);
                                                                 //view_port_update(view_port);
                                                                 //furi_delay_ms(500);
                       }
-                                                              //furi_hal_gpio_write(&gpio_ext_pa14,false);
-                                                              //furi_hal_gpio_disable_int_callback(&gpio_ext_pa14);
-                      furi_hal_gpio_disable_int_callback(&gpio_ext_pa7);  // Then OFF the pin
-                                                              //furi_hal_gpio_disable_int_callback(&gpio_ext_pc3);
-                      break;
 
-                      //if(status_drv==true){
-                      //  furi_hal_gpio_write(&gpio_drv,false);
-                      //  status_drv=!status_drv;
-                      //  break;
-                      //}
-                      //if(status_drv==false){
-                      //  furi_hal_gpio_write(&gpio_drv,true);
-                      //  status_drv=!status_drv;
-                      //  break;
-                      //}
-                      //break;
+                      furi_hal_gpio_disable_int_callback(&gpio_ext_pa7);  // Then OFF the pin
+
+                      break;
                     case InputKeyBack:
                         processing = false;
                         break;
