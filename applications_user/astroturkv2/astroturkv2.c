@@ -28,6 +28,7 @@ typedef struct {
     int TimeExpMS;  //this is exposition time converted to milisecond
     int MenuItem;  //this is the menu item selector
     int Steps;
+    int StepsDelay;
     FuriMutex* mutex;
 
 } Astroturkv2State;
@@ -83,8 +84,8 @@ static void astroturkv2_render_callback(Canvas* const canvas, void* ctx) {
       break;
       case 4:
         elements_multiline_text_aligned(
-            canvas, 32, 46, AlignCenter, AlignTop, " < Steps >");
-        snprintf(buffer, sizeof(buffer), "%u", astroturkv2_state->Steps);
+            canvas, 32, 46, AlignCenter, AlignTop, " < Steps Delay (us) >");
+        snprintf(buffer, sizeof(buffer), "%u", astroturkv2_state->StepsDelay);
       break;
       case 5:
         elements_multiline_text_aligned(
@@ -128,6 +129,7 @@ static void astroturkv2_state_init(Astroturkv2State* const astroturkv2_state) {
     astroturkv2_state->TimeExp = 30;
     astroturkv2_state->MenuItem = 1;
     astroturkv2_state->Steps = 200;
+    astroturkv2_state->StepsDelay = 26000;
 }
 
 int32_t astroturkv2_app(void* p) {
@@ -248,15 +250,15 @@ int32_t astroturkv2_app(void* p) {
                           }
                         }
                         if(astroturkv2_state->MenuItem==4){
-                          if(astroturkv2_state->Steps>9){
-                              if(astroturkv2_state->Steps>44){
-                                astroturkv2_state->Steps = astroturkv2_state->Steps+15;
+                          if(astroturkv2_state->StepsDelay>9){
+                              if(astroturkv2_state->StepsDelay>44){
+                                astroturkv2_state->StepsDelay = astroturkv2_state->StepsDelay+25;
                               }else{
-                                astroturkv2_state->Steps = astroturkv2_state->Steps+5;
+                                astroturkv2_state->StepsDelay = astroturkv2_state->StepsDelay+5;
                                 }
                               }
-                          if(astroturkv2_state->Steps<=9){
-                                    astroturkv2_state->Steps++;
+                          if(astroturkv2_state->StepsDelay<=9){
+                                    astroturkv2_state->StepsDelay++;
                           }
                         }
                         if(astroturkv2_state->MenuItem==5){
@@ -324,15 +326,15 @@ int32_t astroturkv2_app(void* p) {
                         }
                       }
                       if(astroturkv2_state->MenuItem==4){
-                        if(astroturkv2_state->Steps<=5){
-                          if(astroturkv2_state->Steps>1){
-                            astroturkv2_state->Steps--;
+                        if(astroturkv2_state->StepsDelay<=5){
+                          if(astroturkv2_state->StepsDelay>1){
+                            astroturkv2_state->StepsDelay--;
                           }
-                        }if(astroturkv2_state->Steps>5){
-                          if(astroturkv2_state->Steps>44){
-                            astroturkv2_state->Steps = astroturkv2_state->Steps-15;
+                        }if(astroturkv2_state->StepsDelay>5){
+                          if(astroturkv2_state->StepsDelay>44){
+                            astroturkv2_state->StepsDelay = astroturkv2_state->StepsDelay-15;
                           }else{
-                            astroturkv2_state->Steps = astroturkv2_state->Steps-5;
+                            astroturkv2_state->StepsDelay = astroturkv2_state->StepsDelay-5;
                           }
                         }
                       }
@@ -368,7 +370,7 @@ int32_t astroturkv2_app(void* p) {
                       }else{
                         astroturkv2_state->TimeExpMS = astroturkv2_state->TimeExp;
                       }
-                      astroturkv2_state->Steps = (astroturkv2_state->TimeExpMS)/48;
+                      astroturkv2_state->Steps = (astroturkv2_state->TimeExpMS)/(2*astroturkv2_state->StepsDelay/1000);
                       for(int i = 0; i < astroturkv2_state->NumbExp; i++){ //So basically this is the loop that will;
                                                           //  next ver will use 'astroturkv2_state->NumbExp--'
                                                           //if we can display the NumbExp countdown somehow while for loop runs
@@ -378,11 +380,11 @@ int32_t astroturkv2_app(void* p) {
                                                                 //furi_hal_gpio_init_simple(&gpio_ext_pc3, GpioModeOutputPushPull);  //trigger the a7 On for as long as TimeExp time is.
                               furi_hal_gpio_write(&gpio_ext_pa7,true);
                               for(int s = 0; s < astroturkv2_state->Steps; s++){
-                                  furi_delay_us(4000);
+                                  //furi_delay_us(4000);
                                   furi_hal_gpio_write(&gpio_step,true);
-                                  furi_delay_us(22000);
+                                  furi_delay_us(astroturkv2_state->StepsDelay);
                                   furi_hal_gpio_write(&gpio_step,false);
-                                  furi_delay_us(22000);
+                                  furi_delay_us(astroturkv2_state->StepsDelay);
                               }
 
                                                                 //furi_hal_gpio_write(&gpio_ext_pc3,true);
