@@ -6,5 +6,6 @@ App(
         "hello_world",
 	"imetro",
 	"astroturk",
+	"astroturkv2",
     ],
 )

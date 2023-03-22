@@ -28,11 +28,15 @@ typedef struct {
     int TimeExpMS;  //this is exposition time converted to milisecond
     int MenuItem;  //this is the menu item selector
     int Steps;
+    FuriMutex* mutex;
 
 } Astroturkv2State;
 
 static void astroturkv2_render_callback(Canvas* const canvas, void* ctx) {
-    const Astroturkv2State* astroturkv2_state = acquire_mutex((ValueMutex*)ctx, 25);
+    furi_assert(ctx);
+    const Astroturkv2State* astroturkv2_state = ctx;
+
+    furi_mutex_acquire(astroturkv2_state->mutex, FuriWaitForever);
     if(astroturkv2_state == NULL) {
         return;
     }
@@ -109,7 +113,7 @@ static void astroturkv2_render_callback(Canvas* const canvas, void* ctx) {
         }
     elements_multiline_text_aligned(
         canvas, 96, 46, AlignCenter, AlignTop, buffer);
-    release_mutex((ValueMutex*)ctx, astroturkv2_state);
+    furi_mutex_release(astroturkv2_state->mutex);
 }
 
 static void astroturkv2_input_callback(InputEvent* input_event, FuriMessageQueue* event_queue) {
@@ -133,8 +137,8 @@ int32_t astroturkv2_app(void* p) {
     Astroturkv2State* astroturkv2_state = malloc(sizeof(Astroturkv2State));
     astroturkv2_state_init(astroturkv2_state);
 
-    ValueMutex state_mutex;
-    if (!init_mutex(&state_mutex, astroturkv2_state, sizeof(Astroturkv2State))) {
+    astroturkv2_state->mutex = furi_mutex_alloc(FuriMutexTypeNormal);
+    if (!astroturkv2_state->mutex) {
         FURI_LOG_E("astroturkv2", "cannot create mutex\r\n");
         free(astroturkv2_state);
         return 255;
@@ -142,7 +146,7 @@ int32_t astroturkv2_app(void* p) {
 
     // Set system callbacks
     ViewPort* view_port = view_port_alloc();
-    view_port_draw_callback_set(view_port, astroturkv2_render_callback, &state_mutex);
+    view_port_draw_callback_set(view_port, astroturkv2_render_callback, astroturkv2_state);
     view_port_input_callback_set(view_port, astroturkv2_input_callback, event_queue);
 
     // Open GUI and register view_port
@@ -165,7 +169,7 @@ int32_t astroturkv2_app(void* p) {
     for(bool processing = true; processing;) {
         FuriStatus event_status = furi_message_queue_get(event_queue, &event, 100);
 
-        Astroturkv2State* astroturkv2_state = (Astroturkv2State*)acquire_mutex_block(&state_mutex);
+        furi_mutex_acquire(astroturkv2_state->mutex, FuriWaitForever);
 
         if(event_status == FuriStatusOk) {
             // press events
@@ -364,7 +368,7 @@ int32_t astroturkv2_app(void* p) {
                       }else{
                         astroturkv2_state->TimeExpMS = astroturkv2_state->TimeExp;
                       }
-                      astroturkv2_state->Steps = (astroturkv2_state->TimeExpMS)*0.2;
+                      astroturkv2_state->Steps = (astroturkv2_state->TimeExpMS)/48;
                       for(int i = 0; i < astroturkv2_state->NumbExp; i++){ //So basically this is the loop that will;
                                                           //  next ver will use 'astroturkv2_state->NumbExp--'
                                                           //if we can display the NumbExp countdown somehow while for loop runs
@@ -374,17 +378,18 @@ int32_t astroturkv2_app(void* p) {
                                                                 //furi_hal_gpio_init_simple(&gpio_ext_pc3, GpioModeOutputPushPull);  //trigger the a7 On for as long as TimeExp time is.
                               furi_hal_gpio_write(&gpio_ext_pa7,true);
                               for(int s = 0; s < astroturkv2_state->Steps; s++){
+                                  furi_delay_us(4000);
                                   furi_hal_gpio_write(&gpio_step,true);
-                                  furi_delay_us(2500);
+                                  furi_delay_us(22000);
                                   furi_hal_gpio_write(&gpio_step,false);
-                                  furi_delay_us(2500);
+                                  furi_delay_us(22000);
                               }
 
                                                                 //furi_hal_gpio_write(&gpio_ext_pc3,true);
                               furi_hal_gpio_write(&gpio_ext_pa7,false);
                               //furi_hal_gpio_write(&gpio_step,false);
                                                                 //furi_hal_gpio_write(&gpio_ext_pc3,false);
-                              furi_delay_ms(150);
+                              furi_delay_ms(15);         // CAM DELAY!! 150
                                                                 //  view_port_update(view_port);        ## testing to get progress status screen
                                                                 //release_mutex(&state_mutex, astroturkv2_state);
                                                                 //view_port_update(view_port);
@@ -460,7 +465,7 @@ int32_t astroturkv2_app(void* p) {
         }
 
         view_port_update(view_port);
-        release_mutex(&state_mutex, astroturkv2_state);
+        furi_mutex_release(astroturkv2_state->mutex);
     }
 
     view_port_enabled_set(view_port, false);
